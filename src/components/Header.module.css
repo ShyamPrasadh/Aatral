@@ -89,12 +89,13 @@
     }
 
     .title {
-        font-size: 1rem;
+        font-size: 1.125rem;
+        /* Larger on mobile for better visibility */
+        font-weight: 700;
     }
 
     .headerActions {
-        gap: var(--spacing-sm);
-        /* Tighter gap on mobile */
+        gap: var(--spacing-xs);
     }
 
     .iconButton {
@@ -104,13 +105,26 @@
 }
 
 @media (max-width: 480px) {
-    .title {
-        display: none;
-        /* Hide title on very small screens to prevent overlap */
+    .header {
+        padding: var(--spacing-xs) var(--spacing-sm);
     }
 
-    .headerContent {
-        justify-content: flex-end;
-        /* Align icons to right when title is hidden */
+    .title {
+        font-size: 1rem;
+        flex: 1;
+        /* Allow title to take available space */
+        min-width: 0;
+        /* Allow text to shrink if needed */
+    }
+
+    .headerActions {
+        gap: 0.375rem;
+        flex-shrink: 0;
+        /* Prevent icons from shrinking */
+    }
+
+    .iconButton {
+        width: 30px;
+        height: 30px;
     }
 }

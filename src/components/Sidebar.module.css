@@ -66,15 +66,16 @@
 
 .toggleButton {
     position: absolute;
-    right: -12px;
+    right: -18px;
     top: 50%;
     transform: translateY(-50%);
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    /* Square left, rounded right */
     background: var(--color-primary);
     border: 2px solid var(--color-bg-secondary);
-    color: var(--color-text-primary);
+    color: white;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -83,8 +84,12 @@
     z-index: 10;
 }
 
+.toggleButton svg {
+    color: white;
+}
+
 .sidebar.collapsed .toggleButton {
-    right: -12px;
+    right: -18px;
 }
 
 .toggleButton:hover {
@@ -220,28 +225,86 @@
 /* Responsive */
 @media (max-width: 1024px) {
     .sidebar {
+        width: 280px;
+        z-index: 1001;
+    }
+
+    .sidebar.collapsed {
         transform: translateX(-100%);
     }
 
     .sidebar.expanded {
         transform: translateX(0);
-        width: var(--sidebar-width-expanded);
     }
 
-    .sidebar.collapsed {
-        transform: translateX(-100%);
-        /* Hide completely when collapsed on mobile */
-        width: 0;
-        /* Adjusted for mobile collapsed state */
+    /* Override toggle button on mobile - make it fixed regardless of sidebar */
+    .toggleButton {
+        position: fixed !important;
+        left: 0;
+        top: 80px;
+        right: auto;
+        transform: none !important;
+        background: var(--color-primary) !important;
+        border: 2px solid var(--color-bg-secondary);
+        color: white !important;
+        width: 40px;
+        height: 40px;
+        border-radius: 0 var(--radius-md) var(--radius-md) 0;
+        box-shadow: var(--shadow-lg);
+        z-index: 1003 !important;
+        transition: left var(--transition-base);
+    }
+
+    .toggleButton svg {
+        color: white !important;
+    }
+
+    /* When sidebar is expanded, move button to right of sidebar */
+    .sidebar.expanded .toggleButton {
+        left: 280px !important;
+    }
+
+    /* Ensure full sidebar visibility on mobile */
+    .sidebarHeader,
+    .nav,
+    .menuItem {
+        width: 100%;
+    }
+
+    /* Compact menu items on mobile */
+    .menuItem {
+        padding: var(--spacing-sm) var(--spacing-md);
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 260px;
     }
 
     .toggleButton {
-        right: -36px;
-        /* Move toggle button outside sidebar */
-        background: var(--color-bg-card);
-        border: 1px solid var(--color-border);
-        width: 36px;
-        height: 36px;
-        border-radius: 0 var(--radius-md) var(--radius-md) 0;
+        top: 70px !important;
+    }
+
+    .sidebar.expanded .toggleButton {
+        left: 260px !important;
+    }
+
+    .sidebarHeader {
+        height: 56px;
+        padding: var(--spacing-xs) var(--spacing-md);
+    }
+
+    /* More compact menu items */
+    .menuItem {
+        padding: var(--spacing-xs) var(--spacing-sm);
+        font-size: 0.875rem;
+        margin: 0 var(--spacing-xs);
+    }
+
+    .menuIcon {
+        width: 18px;
+        height: 18px;
     }
 }
