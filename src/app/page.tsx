@@ -10,6 +10,7 @@ import { Building2, Zap, Activity } from 'lucide-react';
 import styles from './page.module.css';
 
 export default function Home() {
+    const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
     const [selectedBuilding, setSelectedBuilding] = useState('Building 1 - Dubai Marina');
     const [selectedMeter, setSelectedMeter] = useState('Meter 1');
     const [selectedSubMeter, setSelectedSubMeter] = useState('Sub Meter A');
@@ -26,9 +27,14 @@ export default function Home() {
 
     return (
         <div className={styles.layout}>
-            <Sidebar />
+            <Sidebar
+                isExpanded={isSidebarExpanded}
+                toggleSidebar={() => setIsSidebarExpanded(!isSidebarExpanded)}
+            />
 
-            <main className={styles.main}>
+            <main
+                className={`${styles.main} ${!isSidebarExpanded ? styles.mainCollapsed : ''}`}
+            >
                 <Header />
 
                 <div className={styles.content}>

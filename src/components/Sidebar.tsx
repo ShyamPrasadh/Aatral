@@ -33,12 +33,12 @@ const menuItems = [
     { icon: LayoutGrid, label: 'Others', href: '/others' },
 ];
 
-export default function Sidebar() {
-    const [isExpanded, setIsExpanded] = useState(true);
+interface SidebarProps {
+    isExpanded: boolean;
+    toggleSidebar: () => void;
+}
 
-    const toggleSidebar = () => {
-        setIsExpanded(!isExpanded);
-    };
+export default function Sidebar({ isExpanded, toggleSidebar }: SidebarProps) {
 
     return (
         <aside className={`${styles.sidebar} ${isExpanded ? styles.expanded : styles.collapsed}`}>

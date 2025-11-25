@@ -14,7 +14,7 @@
     width: 100%;
 }
 
-.sidebar.collapsed+.main {
+.mainCollapsed {
     margin-left: var(--sidebar-width-collapsed);
 }
 
@@ -147,7 +147,8 @@
         /* Override sidebar margin on smaller screens */
     }
 
-    .sidebar.collapsed+.main {
+    .sidebar.collapsed+.main,
+    .mainCollapsed {
         margin-left: 0;
     }
 }
