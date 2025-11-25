@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import Image from 'next/image';
 import {
     Home,
     LayoutDashboard,
@@ -45,8 +45,14 @@ export default function Sidebar({ isExpanded, toggleSidebar }: SidebarProps) {
             <div className={styles.sidebarHeader}>
                 <div className={styles.logoContainer}>
                     <div className={styles.logo}>
-                        <span className={styles.logoIcon}>⚡</span>
-                        {isExpanded && <span className={styles.logoText}>AATRAL</span>}
+                        <Image
+                            src="/assets/Aatral.png"
+                            alt="AATRAL Logo"
+                            width={isExpanded ? 160 : 40}
+                            height={40}
+                            className={styles.logoImage}
+                            priority
+                        />
                     </div>
                 </div>
                 <button
