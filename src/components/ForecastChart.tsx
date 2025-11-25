@@ -143,7 +143,7 @@ export default function ForecastChart() {
                 <h3 className={styles.chartTitle}>Forecast vs Actual</h3>
             </div>
             <div className={styles.chartWrapper}>
-                <Line data={data} options={options} />
+                <Line data={data} options={options as any} />
             </div>
         </div>
     );
