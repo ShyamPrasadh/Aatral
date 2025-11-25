@@ -1,0 +1,44 @@
+.chartContainer {
+    background: var(--color-bg-card);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    border: 1px solid var(--color-border);
+    transition: all var(--transition-base);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.chartContainer:hover {
+    border-color: var(--color-border-hover);
+    box-shadow: var(--shadow-lg);
+}
+
+.chartHeader {
+    margin-bottom: var(--spacing-lg);
+}
+
+.chartTitle {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.chartWrapper {
+    flex: 1;
+    position: relative;
+    min-height: 300px;
+}
+
+@media (max-width: 768px) {
+    .chartContainer {
+        padding: var(--spacing-md);
+    }
+
+    .chartWrapper {
+        min-height: 250px;
+    }
+}
