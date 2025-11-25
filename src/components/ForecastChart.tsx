@@ -116,6 +116,8 @@ export default function ForecastChart() {
                 },
             },
             y: {
+                beginAtZero: false,
+                min: 2800,
                 grid: {
                     color: 'rgba(168, 184, 216, 0.05)',
                     drawBorder: false,
