@@ -55,13 +55,6 @@ export default function Sidebar({ isExpanded, toggleSidebar }: SidebarProps) {
                         />
                     </div>
                 </div>
-                <button
-                    className={styles.toggleButton}
-                    onClick={toggleSidebar}
-                    aria-label={isExpanded ? 'Collapse sidebar' : 'Expand sidebar'}
-                >
-                    {isExpanded ? <ChevronLeft size={20} /> : <ChevronRight size={20} />}
-                </button>
             </div>
 
             <nav className={styles.nav}>
@@ -93,6 +86,13 @@ export default function Sidebar({ isExpanded, toggleSidebar }: SidebarProps) {
                         <p className={styles.footerText}>Energy Dashboard v1.0</p>
                     </div>
                 )}
+                <button
+                    className={styles.footerToggle}
+                    onClick={toggleSidebar}
+                    aria-label={isExpanded ? 'Collapse sidebar' : 'Expand sidebar'}
+                >
+                    {isExpanded ? <ChevronLeft size={20} /> : <ChevronRight size={20} />}
+                </button>
             </div>
         </aside>
     );

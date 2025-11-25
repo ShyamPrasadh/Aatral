@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Sidebar from '@/components/Sidebar';
 import Header from '@/components/Header';
 import GaugeChart from '@/components/GaugeChart';
@@ -10,10 +10,25 @@ import { Building2, Zap, Activity } from 'lucide-react';
 import styles from './page.module.css';
 
 export default function Home() {
-    const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
+    const [isSidebarExpanded, setIsSidebarExpanded] = useState(false); // Start closed
     const [selectedBuilding, setSelectedBuilding] = useState('Building 1 - Dubai Marina');
     const [selectedMeter, setSelectedMeter] = useState('Meter 1');
     const [selectedSubMeter, setSelectedSubMeter] = useState('Sub Meter A');
+
+    // Auto-expand sidebar on desktop, keep closed on mobile
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth >= 1024) {
+                setIsSidebarExpanded(true); // Open on desktop
+            } else {
+                setIsSidebarExpanded(false); // Closed on mobile
+            }
+        };
+
+        handleResize(); // Run on mount
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     const buildings = [
         'Building 1 - Dubai Marina',
@@ -31,6 +46,17 @@ export default function Home() {
                 isExpanded={isSidebarExpanded}
                 toggleSidebar={() => setIsSidebarExpanded(!isSidebarExpanded)}
             />
+
+            {/* Mobile-only toggle button - always visible */}
+            <button
+                className={styles.mobileToggle}
+                onClick={() => setIsSidebarExpanded(!isSidebarExpanded)}
+                aria-label={isSidebarExpanded ? 'Close sidebar' : 'Open sidebar'}
+            >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M3 12h18M3 6h18M3 18h18" />
+                </svg>
+            </button>
 
             <main
                 className={`${styles.main} ${!isSidebarExpanded ? styles.mainCollapsed : ''}`}
