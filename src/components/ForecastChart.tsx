@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { Info, X } from 'lucide-react';
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -30,6 +31,7 @@ type TimeFrame = '5m' | '10m' | '1hr' | '3hr' | '1day';
 
 export default function ForecastChart() {
     const [selectedTimeFrame, setSelectedTimeFrame] = useState<TimeFrame>('1day');
+    const [showInfo, setShowInfo] = useState(false);
 
     const timeFrames: { value: TimeFrame; label: string }[] = [
         { value: '5m', label: '5m' },
@@ -192,7 +194,25 @@ export default function ForecastChart() {
     return (
         <div className={styles.chartContainer}>
             <div className={styles.chartHeader}>
-                <h3 className={styles.chartTitle}>Forecast vs Actual</h3>
+                <div className={styles.headerLeft}>
+                    <h3 className={styles.chartTitle}>Power Usage</h3>
+                    <div
+                        className={styles.infoContainer}
+                        onMouseEnter={() => setShowInfo(true)}
+                        onMouseLeave={() => setShowInfo(false)}
+                    >
+                        <button className={styles.infoButton}>
+                            <Info size={16} />
+                        </button>
+                        {showInfo && (
+                            <div className={styles.infoPopup}>
+                                <div className={styles.infoContent}>
+                                    <p>This chart compares the <strong>Actual</strong> energy consumption against the <strong>Forecasted</strong> values over time. It helps in identifying deviations and optimizing energy usage.</p>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
                 <div className={styles.timeFrameButtons}>
                     {timeFrames.map((tf) => (
                         <button

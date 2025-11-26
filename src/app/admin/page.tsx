@@ -1,8 +1,14 @@
-export default function Admin() {
+'use client';
+
+import MainLayout from '@/components/MainLayout';
+
+export default function AdminPage() {
     return (
-        <div style={{ padding: '2rem' }}>
-            <h1>Admin</h1>
-            <p>Admin page - Coming soon</p>
-        </div>
+        <MainLayout>
+            <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--color-text-muted)' }}>
+                <h1>Admin</h1>
+                <p>This page is under construction.</p>
+            </div>
+        </MainLayout>
     );
 }

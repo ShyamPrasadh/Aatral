@@ -3,8 +3,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
-import { Shuffle } from 'lucide-react';
+import { Shuffle, Info, X } from 'lucide-react';
 import styles from './GaugeChart.module.css';
+import { useTheme } from './ThemeProvider';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -20,12 +21,14 @@ const centerTextPlugin = {
         const ctx = chart.ctx;
         const value = chart.config.options.plugins.centerText?.textTop || '0';
         const unit = chart.config.options.plugins.centerText?.textBottom || '';
+        const textColor = chart.config.options.plugins.centerText?.textColor || '#ffffff';
+        const unitColor = chart.config.options.plugins.centerText?.unitColor || '#a8b8d8';
 
         ctx.save();
 
         // Draw main value - moved down by 20px
         ctx.font = 'bold 1.5rem Inter, Arial, sans-serif';
-        ctx.fillStyle = '#1f2937'; // Dark color for better visibility
+        ctx.fillStyle = textColor;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(value, chart.width / 2, chart.height / 2 + 30);
@@ -33,7 +36,7 @@ const centerTextPlugin = {
         // Draw unit - moved down by 20px
         if (unit) {
             ctx.font = '500 0.75rem Inter, Arial, sans-serif';
-            ctx.fillStyle = '#6b7280'; // Darker grey for unit
+            ctx.fillStyle = unitColor;
             ctx.fillText(unit, chart.width / 2, chart.height / 2 + 50);
         }
 
@@ -51,6 +54,8 @@ interface GaugeChartProps {
     meterId?: string;
 }
 
+type TimeFrame = '5m' | '10m' | '1hr' | '3hr' | '1day';
+
 export default function GaugeChart({
     value,
     maxValue,
@@ -58,10 +63,29 @@ export default function GaugeChart({
     unit,
     meterId = 'N/A'
 }: GaugeChartProps) {
+    const { theme } = useTheme();
     const [inputValue, setInputValue] = useState<string>(value.toString());
     const [displayValue, setDisplayValue] = useState<number>(value);
+    const [selectedTimeFrame, setSelectedTimeFrame] = useState<TimeFrame>('1day');
+    const [showInfo, setShowInfo] = useState(false);
+
+    // Use a ref to keep track of the value for the plugin
+    // This ensures the plugin always reads the latest value without re-registering
+    const valueRef = useRef(displayValue);
+
+    useEffect(() => {
+        valueRef.current = displayValue;
+    }, [displayValue]);
 
     const percentage = (displayValue / maxValue) * 100;
+
+    const timeFrames: { value: TimeFrame; label: string }[] = [
+        { value: '5m', label: '5m' },
+        { value: '10m', label: '10m' },
+        { value: '1hr', label: '1hr' },
+        { value: '3hr', label: '3hr' },
+        { value: '1day', label: '1 Day' },
+    ];
 
     // Handle input change
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -183,6 +207,7 @@ export default function GaugeChart({
     const { data: segmentData, bgColors: segmentColors, borderRadius: segmentBorderRadius } = getSegmentData(displayValue);
 
     // Custom plugin to draw the indicator circle (needle head)
+    // Defined inside component to access valueRef
     const indicatorPlugin = {
         id: 'indicator',
         afterDraw: (chart: any) => {
@@ -201,7 +226,10 @@ export default function GaugeChart({
             // Circumference is 250 degrees
             const startAngle = -125 * (Math.PI / 180);
             const circumference = 250 * (Math.PI / 180);
-            const valPercent = Math.min(Math.max(displayValue, 0), 100) / 100;
+
+            // Use the ref value for calculation
+            const currentVal = valueRef.current;
+            const valPercent = Math.min(Math.max(currentVal, 0), 100) / 100;
             const angle = startAngle + (circumference * valPercent);
 
             const cx = chart.width / 2;
@@ -214,12 +242,12 @@ export default function GaugeChart({
 
             // Draw Circle Border (White)
             ctx.beginPath();
-            ctx.arc(x, y, 10, 0, 2 * Math.PI); // Slightly smaller circle
+            ctx.arc(x, y, 10, 0, 2 * Math.PI);
             ctx.fillStyle = '#ffffff';
             ctx.fill();
 
             // Determine current color based on value
-            const currentColor = displayValue <= 33 ? '#25A959' : displayValue <= 66 ? '#F5935D' : '#FF0000';
+            const currentColor = currentVal <= 33 ? '#25A959' : currentVal <= 66 ? '#F5935D' : '#FF0000';
 
             ctx.strokeStyle = currentColor;
             ctx.lineWidth = 2;
@@ -273,28 +301,59 @@ export default function GaugeChart({
             centerText: {
                 textTop: displayValue.toLocaleString(),
                 textBottom: unit,
-                textColor: '#ffffff' // Restored white text
+                textColor: theme === 'dark' ? '#ffffff' : '#1f2937',
+                unitColor: theme === 'dark' ? '#a8b8d8' : '#6b7280'
             }
         },
     };
 
-    // Register the local plugin
-    useEffect(() => {
-        ChartJS.register(indicatorPlugin);
-        return () => {
-            ChartJS.unregister(indicatorPlugin);
-        };
-    }, [displayValue]); // Re-register to update color logic if needed, though mostly static logic works
+    // Remove the useEffect that was registering the plugin globally
+    // useEffect(() => {
+    //     ChartJS.register(indicatorPlugin);
+    //     return () => {
+    //         ChartJS.unregister(indicatorPlugin);
+    //     };
+    // }, [displayValue]);
 
     return (
         <div className={styles.gaugeContainer}>
             <div className={styles.gaugeHeader}>
-                <h3 className={styles.gaugeLabel}>{label}</h3>
+                <div className={styles.headerLeft}>
+                    <h3 className={styles.gaugeLabel}>{label}</h3>
+                    <div
+                        className={styles.infoContainer}
+                        onMouseEnter={() => setShowInfo(true)}
+                        onMouseLeave={() => setShowInfo(false)}
+                    >
+                        <button className={styles.infoButton}>
+                            <Info size={16} />
+                        </button>
+                        {showInfo && (
+                            <div className={styles.infoPopup}>
+                                <div className={styles.infoContent}>
+                                    <p>This meter tracks the <strong>CO2 emissions</strong> generated by the factory floor associated with Meter ID: <strong>{meterId}</strong>.</p>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+                <div className={styles.timeFrameButtons}>
+                    {timeFrames.map((tf) => (
+                        <button
+                            key={tf.value}
+                            className={`${styles.timeFrameButton} ${selectedTimeFrame === tf.value ? styles.active : ''
+                                }`}
+                            onClick={() => setSelectedTimeFrame(tf.value)}
+                        >
+                            {tf.label}
+                        </button>
+                    ))}
+                </div>
             </div>
 
             <div className={styles.gaugeWrapper}>
                 <div className={styles.chartContainer}>
-                    <Doughnut data={data} options={options} />
+                    <Doughnut data={data} options={options} plugins={[indicatorPlugin]} />
                 </div>
 
                 <div className={styles.inputWrapper}>

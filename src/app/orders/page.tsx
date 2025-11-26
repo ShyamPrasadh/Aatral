@@ -1,8 +1,14 @@
-export default function Orders() {
+'use client';
+
+import MainLayout from '@/components/MainLayout';
+
+export default function OrdersPage() {
     return (
-        <div style={{ padding: '2rem' }}>
-            <h1>Orders</h1>
-            <p>Orders page - Coming soon</p>
-        </div>
+        <MainLayout>
+            <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--color-text-muted)' }}>
+                <h1>Orders</h1>
+                <p>This page is under construction.</p>
+            </div>
+        </MainLayout>
     );
 }

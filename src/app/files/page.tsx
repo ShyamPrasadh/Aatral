@@ -1,8 +1,14 @@
-export default function Files() {
+'use client';
+
+import MainLayout from '@/components/MainLayout';
+
+export default function FilesPage() {
     return (
-        <div style={{ padding: '2rem' }}>
-            <h1>Files</h1>
-            <p>Files page - Coming soon</p>
-        </div>
+        <MainLayout>
+            <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--color-text-muted)' }}>
+                <h1>Files</h1>
+                <p>This page is under construction.</p>
+            </div>
+        </MainLayout>
     );
 }

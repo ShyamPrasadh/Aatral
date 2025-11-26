@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import {
     Home,
     LayoutDashboard,
@@ -20,7 +21,7 @@ import styles from './Sidebar.module.css';
 
 const menuItems = [
     { icon: Home, label: 'Home', href: '/' },
-    { icon: LayoutDashboard, label: 'Dashboard', href: '/dashboard', active: true },
+    { icon: LayoutDashboard, label: 'Dashboard', href: '/dashboard' },
     { icon: Building2, label: 'Buildings', href: '/buildings' },
     { icon: Users, label: 'Admin', href: '/admin' },
     { icon: FileText, label: 'Files', href: '/files' },
@@ -39,6 +40,7 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ isExpanded, toggleSidebar }: SidebarProps) {
+    const pathname = usePathname();
 
     return (
         <aside className={`${styles.sidebar} ${isExpanded ? styles.expanded : styles.collapsed}`}>
@@ -61,18 +63,19 @@ export default function Sidebar({ isExpanded, toggleSidebar }: SidebarProps) {
                 <ul className={styles.menuList}>
                     {menuItems.map((item, index) => {
                         const Icon = item.icon;
+                        const isActive = pathname === item.href || (item.href !== '/' && pathname?.startsWith(item.href));
                         return (
                             <li key={index}>
                                 <a
                                     href={item.href}
-                                    className={`${styles.menuItem} ${item.active ? styles.active : ''}`}
+                                    className={`${styles.menuItem} ${isActive ? styles.active : ''}`}
                                     title={!isExpanded ? item.label : ''}
                                 >
                                     <span className={styles.menuIcon}>
                                         <Icon size={20} />
                                     </span>
                                     {isExpanded && <span className={styles.menuLabel}>{item.label}</span>}
-                                    {item.active && <span className={styles.activeIndicator}></span>}
+                                    {isActive && <span className={styles.activeIndicator}></span>}
                                 </a>
                             </li>
                         );

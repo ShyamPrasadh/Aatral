@@ -1,8 +1,14 @@
-export default function Buildings() {
+'use client';
+
+import MainLayout from '@/components/MainLayout';
+
+export default function BuildingsPage() {
     return (
-        <div style={{ padding: '2rem' }}>
-            <h1>Buildings</h1>
-            <p>Buildings page - Coming soon</p>
-        </div>
+        <MainLayout>
+            <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--color-text-muted)' }}>
+                <h1>Buildings</h1>
+                <p>This page is under construction.</p>
+            </div>
+        </MainLayout>
     );
 }
