@@ -59,36 +59,36 @@ export default function GaugeChart({
 }: GaugeChartProps) {
     const percentage = (value / maxValue) * 100;
 
-    // Determine color based on percentage
-    const getColor = (val: number) => {
-        if (val <= 33) return '#25A959';      // Green
-        if (val <= 66) return '#F5935D';      // Orange
-        return '#FF0000';                      // Red
+    // Get color segments based on percentage
+    const getColorSegments = (val: number) => {
+        return [
+            val >= 33 ? '#25A959' : '#2a2a2a',  // Green zone
+            val >= 66 ? '#F5935D' : '#2a2a2a',  // Orange zone
+            val > 90 ? '#FF0000' : '#2a2a2a'    // Red zone
+        ];
     };
 
     const data = {
         datasets: [
-            // Background segments (always visible)
             {
                 data: [33, 33, 34],
-                backgroundColor: ['#25A959', '#F5935D', '#FF0000'],
+                backgroundColor: getColorSegments(percentage),
                 borderWidth: 0,
-                borderRadius: 8,
-                spacing: 4,
+                borderRadius: 10,
+                spacing: 6,
                 circumference: 250,
                 rotation: -125,
                 radius: '100%',
                 cutout: '85%'
             },
-            // Needle/indicator layer
             {
-                data: [percentage, 100 - percentage],
-                backgroundColor: [getColor(percentage), 'rgba(42, 42, 42, 0.1)'],
+                data: [100],
+                backgroundColor: ['rgba(42, 42, 42, 0.3)'],
                 borderWidth: 0,
-                circumference: 250,
-                rotation: -125,
                 radius: '110%',
-                cutout: '75%'
+                cutout: '60%',
+                circumference: 250,
+                rotation: -125
             }
         ],
     };
