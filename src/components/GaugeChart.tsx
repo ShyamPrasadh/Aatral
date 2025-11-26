@@ -11,6 +11,11 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 const centerTextPlugin = {
     id: 'centerText',
     afterDraw(chart: any) {
+        // Only draw if centerText is explicitly configured
+        if (!chart.config.options.plugins.centerText) {
+            return;
+        }
+
         const ctx = chart.ctx;
         const value = chart.config.options.plugins.centerText?.textTop || '0';
         const unit = chart.config.options.plugins.centerText?.textBottom || '';
