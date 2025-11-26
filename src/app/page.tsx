@@ -15,21 +15,6 @@ export default function Home() {
     const [selectedMeter, setSelectedMeter] = useState('Meter 1');
     const [selectedSubMeter, setSelectedSubMeter] = useState('Sub Meter A');
 
-    // Auto-expand sidebar on desktop, keep closed on mobile
-    useEffect(() => {
-        const handleResize = () => {
-            if (window.innerWidth >= 1024) {
-                setIsSidebarExpanded(true); // Open on desktop
-            } else {
-                setIsSidebarExpanded(false); // Closed on mobile
-            }
-        };
-
-        handleResize(); // Run on mount
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
-
     const buildings = [
         'Building 1 - Dubai Marina',
         'Building 2 - Downtown Dubai',
@@ -97,7 +82,7 @@ export default function Home() {
                     <div className={styles.dashboardGrid}>
                         <div className={styles.gaugeSection}>
                             <GaugeChart
-                                value={8400}
+                                value={38}
                                 maxValue={10000}
                                 label="CO2"
                                 unit="Kw"
