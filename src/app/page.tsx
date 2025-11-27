@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import MainLayout from '@/components/MainLayout';
 import GaugeChart from '@/components/GaugeChart';
 import ForecastChart from '@/components/ForecastChart';
@@ -22,6 +22,29 @@ export default function Home() {
 
     const meters = ['Meter 1', 'Meter 2', 'Meter 3', 'Meter 4'];
     const subMeters = ['Sub Meter A', 'Sub Meter B', 'Sub Meter C'];
+
+    // Generate a deterministic pseudo-random number based on a seed string
+    const getSeededRandom = (seed: string): number => {
+        let hash = 0;
+        for (let i = 0; i < seed.length; i++) {
+            hash = seed.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        let x = Math.sin(hash) * 10000;
+        return x - Math.floor(x); // Returns a value between 0 and 1
+    };
+
+    // Calculate CO2 value based on selected filters (1-100 range)
+    const co2Value = useMemo(() => {
+        const filterKey = `${selectedBuilding}-${selectedMeter}-${selectedSubMeter}`;
+        const randomValue = getSeededRandom(filterKey);
+        // Generate a value between 20 and 95 for better visual variety
+        return Math.round(20 + randomValue * 75);
+    }, [selectedBuilding, selectedMeter, selectedSubMeter]);
+
+    // Create a unique filter key for the ForecastChart
+    const filterKey = useMemo(() => {
+        return `${selectedBuilding}-${selectedMeter}-${selectedSubMeter}`;
+    }, [selectedBuilding, selectedMeter, selectedSubMeter]);
 
     return (
         <MainLayout>
@@ -58,7 +81,7 @@ export default function Home() {
             <div className={styles.dashboardGrid}>
                 <div className={styles.gaugeSection}>
                     <GaugeChart
-                        value={38}
+                        value={co2Value}
                         maxValue={10000}
                         label="CO2"
                         unit="Mt"
@@ -67,7 +90,7 @@ export default function Home() {
                 </div>
 
                 <div className={styles.chartSection}>
-                    <ForecastChart />
+                    <ForecastChart filterKey={filterKey} />
                 </div>
             </div>
 

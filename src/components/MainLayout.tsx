@@ -3,13 +3,24 @@
 import { useState } from 'react';
 import Sidebar from '@/components/Sidebar';
 import Header from '@/components/Header';
+import SplashScreen from '@/components/SplashScreen';
+import { useSplash } from '@/components/SplashProvider';
 import styles from '@/app/page.module.css';
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
     const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
+    const { showSplash } = useSplash();
 
     return (
         <div className={styles.layout}>
+            {/* Continuous Splash Screen */}
+            {showSplash && (
+                <SplashScreen
+                    onComplete={() => { }}
+                    duration={3000}
+                />
+            )}
+
             <Sidebar
                 isExpanded={isSidebarExpanded}
                 toggleSidebar={() => setIsSidebarExpanded(!isSidebarExpanded)}

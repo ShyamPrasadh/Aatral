@@ -73,6 +73,12 @@ export default function GaugeChart({
     const valueRef = useRef(displayValue);
     valueRef.current = displayValue; // Update synchronously on render
 
+    // Sync with prop value when it changes
+    useEffect(() => {
+        setDisplayValue(value);
+        setInputValue(value.toString());
+    }, [value]);
+
     const percentage = (displayValue / maxValue) * 100;
 
     const timeFrames: { value: TimeFrame; label: string }[] = [

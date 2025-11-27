@@ -1,11 +1,13 @@
 'use client';
 
-import { Bell, User, Sun, Moon } from 'lucide-react';
+import { Bell, User, Sun, Moon, Play, X } from 'lucide-react';
 import styles from './Header.module.css';
 import { useTheme } from './ThemeProvider';
+import { useSplash } from './SplashProvider';
 
 export default function Header() {
     const { theme, toggleTheme } = useTheme();
+    const { showSplash, toggleSplash } = useSplash();
 
     return (
         <header className={styles.header}>
@@ -13,6 +15,15 @@ export default function Header() {
                 <h1 className={styles.title}>Energy Dashboard</h1>
 
                 <div className={styles.headerActions}>
+                    <button
+                        className={styles.iconButton}
+                        onClick={toggleSplash}
+                        aria-label="Toggle splash screen"
+                        title={showSplash ? "Hide Splash Screen" : "Show Splash Screen"}
+                    >
+                        {showSplash ? <X size={20} /> : <Play size={20} />}
+                    </button>
+
                     <button
                         className={styles.iconButton}
                         onClick={toggleTheme}
