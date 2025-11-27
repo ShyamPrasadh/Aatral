@@ -151,6 +151,81 @@
     width: 100%;
     max-width: 280px;
     margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.needleWrapper {
+    position: absolute;
+    top: 62%;
+    /* Adjusted to visual center */
+    left: 50%;
+    width: 0;
+    height: 0;
+    z-index: 10;
+    transition: transform 0.5s cubic-bezier(0.4, 0.0, 0.2, 1);
+    /* Smooth animation */
+}
+
+.needle {
+    position: absolute;
+    bottom: -5px;
+    /* Pivot point offset */
+    left: -2px;
+    /* Center horizontally */
+    width: 4px;
+    height: 104px;
+    /* Reduced length */
+    background: transparent;
+    /* Hidden stick */
+    border-radius: 4px;
+    transform-origin: bottom center;
+}
+
+.needleCircle {
+    display: none;
+    /* Hidden center circle */
+    position: absolute;
+    top: 62%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 12px;
+    height: 12px;
+    background: var(--color-text-primary);
+    border-radius: 50%;
+    z-index: 11;
+    border: 2px solid var(--color-bg-card);
+}
+
+.needleTip {
+    position: absolute;
+    bottom: 99px;
+    /* Adjusted for 104px needle */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 24px;
+    /* Increased size */
+    height: 24px;
+    /* Increased size */
+    background: #ffffff;
+    border-radius: 50%;
+    border: 2px solid;
+    /* Color set inline */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 12;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.needleTipInner {
+    width: 12px;
+    /* Increased inner size */
+    height: 12px;
+    /* Increased inner size */
+    border-radius: 50%;
+    /* Background color set inline */
 }
 
 .gaugeFooter {

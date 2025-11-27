@@ -29,7 +29,11 @@ ChartJS.register(
 
 type TimeFrame = '5m' | '10m' | '1hr' | '3hr' | '1day';
 
-export default function ForecastChart() {
+interface ForecastChartProps {
+    filterKey?: string;
+}
+
+export default function ForecastChart({ filterKey = '' }: ForecastChartProps) {
     const [selectedTimeFrame, setSelectedTimeFrame] = useState<TimeFrame>('1day');
     const [showInfo, setShowInfo] = useState(false);
 
@@ -41,39 +45,63 @@ export default function ForecastChart() {
         { value: '1day', label: '1 Day' },
     ];
 
+    // Simple pseudo-random number generator for consistent noise based on a seed
+    const getNoise = (seed: string) => {
+        let hash = 0;
+        for (let i = 0; i < seed.length; i++) {
+            hash = seed.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        let x = Math.sin(hash++) * 10000;
+        return x - Math.floor(x); // Returns a value between 0 and 1
+    };
+
     // Different data for each time frame
     const getChartData = () => {
+        const noiseRange = 600; // Moderate random variation
+        // Calculate a base shift to vary the data level
+        const baseShift = (getNoise(`${filterKey}-base`) - 0.5) * 800; // -0.5 to center the shift around 0
+
+        const randomize = (arr: number[]) => {
+            if (!filterKey) return arr; // Don't randomize if filterKey is 0 (initial state)
+            return arr.map((val, i) => {
+                const noise = (getNoise(`${filterKey}-${selectedTimeFrame}-${i}`) - 0.5) * noiseRange; // -0.5 to center noise around 0
+                const newVal = val + baseShift + noise;
+                // Clamp values to stay within chart range (2800-5500)
+                return Math.round(Math.max(2800, Math.min(5500, newVal)));
+            });
+        };
+
         switch (selectedTimeFrame) {
             case '5m':
                 return {
                     labels: ['0m', '1m', '2m', '3m', '4m', '5m'],
-                    actual: [3200, 3250, 3180, 3300, 3280, 3350],
-                    forecast: [3180, 3220, 3200, 3280, 3300, 3320],
+                    actual: randomize([3200, 3250, 3180, 3300, 3280, 3350]),
+                    forecast: randomize([3180, 3220, 3200, 3280, 3300, 3320]),
                 };
             case '10m':
                 return {
                     labels: ['0m', '2m', '4m', '6m', '8m', '10m'],
-                    actual: [3150, 3200, 3180, 3250, 3300, 3400],
-                    forecast: [3140, 3190, 3200, 3240, 3280, 3380],
+                    actual: randomize([3150, 3200, 3180, 3250, 3300, 3400]),
+                    forecast: randomize([3140, 3190, 3200, 3240, 3280, 3380]),
                 };
             case '1hr':
                 return {
                     labels: ['0m', '10m', '20m', '30m', '40m', '50m', '60m'],
-                    actual: [3100, 3150, 3200, 3250, 3300, 3350, 3400],
-                    forecast: [3080, 3140, 3180, 3230, 3280, 3330, 3380],
+                    actual: randomize([3100, 3150, 3200, 3250, 3300, 3350, 3400]),
+                    forecast: randomize([3080, 3140, 3180, 3230, 3280, 3330, 3380]),
                 };
             case '3hr':
                 return {
                     labels: ['0h', '0.5h', '1h', '1.5h', '2h', '2.5h', '3h'],
-                    actual: [3000, 3100, 3200, 3300, 3400, 3500, 3600],
-                    forecast: [2980, 3080, 3180, 3280, 3380, 3480, 3580],
+                    actual: randomize([3000, 3100, 3200, 3300, 3400, 3500, 3600]),
+                    forecast: randomize([2980, 3080, 3180, 3280, 3380, 3480, 3580]),
                 };
             case '1day':
             default:
                 return {
                     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-                    actual: [3200, 3400, 3100, 3600, 3300, 3500, 3400, 3700, 3500, 3800, 3600, 3900],
-                    forecast: [3000, 3200, 3300, 3400, 3500, 3600, 3500, 3700, 3600, 3800, 3700, 3900],
+                    actual: randomize([3200, 3400, 3100, 3600, 3300, 3500, 3400, 3700, 3500, 3800, 3600, 3900]),
+                    forecast: randomize([3000, 3200, 3300, 3400, 3500, 3600, 3500, 3700, 3600, 3800, 3700, 3900]),
                 };
         }
     };

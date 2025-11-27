@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
 import { Shuffle, Info, X } from 'lucide-react';
@@ -70,12 +70,8 @@ export default function GaugeChart({
     const [showInfo, setShowInfo] = useState(false);
 
     // Use a ref to keep track of the value for the plugin
-    // This ensures the plugin always reads the latest value without re-registering
     const valueRef = useRef(displayValue);
-
-    useEffect(() => {
-        valueRef.current = displayValue;
-    }, [displayValue]);
+    valueRef.current = displayValue; // Update synchronously on render
 
     const percentage = (displayValue / maxValue) * 100;
 
@@ -206,62 +202,9 @@ export default function GaugeChart({
 
     const { data: segmentData, bgColors: segmentColors, borderRadius: segmentBorderRadius } = getSegmentData(displayValue);
 
-    // Custom plugin to draw the indicator circle (needle head)
-    // Defined inside component to access valueRef
-    const indicatorPlugin = {
-        id: 'indicator',
-        afterDraw: (chart: any) => {
-            const ctx = chart.ctx;
-            const meta = chart.getDatasetMeta(0);
-
-            // Get the exact dimensions from the chart meta
-            const outerRadius = meta.data[0].outerRadius;
-            const innerRadius = meta.data[0].innerRadius;
-
-            // The indicator should be exactly in the middle of the outer ring
-            const radius = (outerRadius + innerRadius) / 2;
-
-            // Calculate angle
-            // Chart starts at -125 degrees (in radians)
-            // Circumference is 250 degrees
-            const startAngle = -125 * (Math.PI / 180);
-            const circumference = 250 * (Math.PI / 180);
-
-            // Use the ref value for calculation
-            const currentVal = valueRef.current;
-            const valPercent = Math.min(Math.max(currentVal, 0), 100) / 100;
-            const angle = startAngle + (circumference * valPercent);
-
-            const cx = chart.width / 2;
-            const cy = chart.height / 2;
-
-            const x = cx + Math.cos(angle) * radius;
-            const y = cy + Math.sin(angle) * radius;
-
-            ctx.save();
-
-            // Draw Circle Border (White)
-            ctx.beginPath();
-            ctx.arc(x, y, 10, 0, 2 * Math.PI);
-            ctx.fillStyle = '#ffffff';
-            ctx.fill();
-
-            // Determine current color based on value
-            const currentColor = currentVal <= 33 ? '#25A959' : currentVal <= 66 ? '#F5935D' : '#FF0000';
-
-            ctx.strokeStyle = currentColor;
-            ctx.lineWidth = 2;
-            ctx.stroke();
-
-            // Draw Inner Circle (Color)
-            ctx.beginPath();
-            ctx.arc(x, y, 5, 0, 2 * Math.PI);
-            ctx.fillStyle = currentColor;
-            ctx.fill();
-
-            ctx.restore();
-        }
-    };
+    // Calculate needle rotation and color
+    const rotation = -125 + (Math.min(Math.max(displayValue, 0), 100) / 100) * 250;
+    const needleColor = displayValue <= 33 ? '#25A959' : displayValue <= 66 ? '#F5935D' : '#FF0000';
 
     const data = {
         datasets: [
@@ -307,14 +250,6 @@ export default function GaugeChart({
         },
     };
 
-    // Remove the useEffect that was registering the plugin globally
-    // useEffect(() => {
-    //     ChartJS.register(indicatorPlugin);
-    //     return () => {
-    //         ChartJS.unregister(indicatorPlugin);
-    //     };
-    // }, [displayValue]);
-
     return (
         <div className={styles.gaugeContainer}>
             <div className={styles.gaugeHeader}>
@@ -353,7 +288,23 @@ export default function GaugeChart({
 
             <div className={styles.gaugeWrapper}>
                 <div className={styles.chartContainer}>
-                    <Doughnut data={data} options={options} plugins={[indicatorPlugin]} />
+                    <Doughnut data={data} options={options} />
+                    {/* CSS Needle */}
+                    <div
+                        className={styles.needleWrapper}
+                        style={{ transform: `rotate(${rotation}deg)` }}
+                    >
+                        {/* Custom Pointer at Tip */}
+                        <div
+                            className={styles.needleTip}
+                            style={{ borderColor: needleColor }}
+                        >
+                            <div
+                                className={styles.needleTipInner}
+                                style={{ background: needleColor }}
+                            />
+                        </div>
+                    </div>
                 </div>
 
                 <div className={styles.inputWrapper}>
