@@ -330,6 +330,18 @@
         max-width: 220px;
     }
 
+    .needleTip {
+        bottom: 78px;
+        /* Adjusted for smaller chart size (220px width) */
+        width: 20px;
+        height: 20px;
+    }
+
+    .needleTipInner {
+        width: 10px;
+        height: 10px;
+    }
+
     .value {
         font-size: 2rem;
     }
