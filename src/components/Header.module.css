@@ -38,19 +38,18 @@
 .headerActions {
     display: flex;
     align-items: center;
-    gap: var(--spacing-md);
+    gap: var(--spacing-sm);
     /* Reduced gap */
 }
 
 .iconButton {
     position: relative;
     width: 40px;
-    /* Smaller buttons */
     height: 40px;
     border-radius: var(--radius-md);
-    background: var(--color-bg-secondary);
-    border: 1px solid var(--color-border);
-    color: var(--color-text-secondary);
+    background: rgba(37, 99, 235, 0.06);
+    border: 1px solid rgba(37, 99, 235, 0.1);
+    color: var(--color-primary);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -59,11 +58,9 @@
 }
 
 .iconButton:hover {
-    background: var(--color-bg-tertiary);
-    border-color: var(--color-border-hover);
-    color: var(--color-text-primary);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
+    background: rgba(37, 99, 235, 0.12);
+    border-color: rgba(37, 99, 235, 0.2);
+    color: var(--color-primary);
 }
 
 .badge {

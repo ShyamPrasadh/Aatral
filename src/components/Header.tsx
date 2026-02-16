@@ -1,13 +1,15 @@
 'use client';
 
-import { Bell, User, Sun, Moon, Play, X } from 'lucide-react';
+import { Bell, User, Sun, Moon, Play, X, Filter } from 'lucide-react';
 import styles from './Header.module.css';
 import { useTheme } from './ThemeProvider';
 import { useSplash } from './SplashProvider';
+import { useFilter } from './FilterProvider';
 
 export default function Header() {
     const { theme, toggleTheme } = useTheme();
     const { showSplash, toggleSplash } = useSplash();
+    const { isFilterVisible, toggleFilter } = useFilter();
 
     return (
         <header className={styles.header}>
@@ -15,6 +17,15 @@ export default function Header() {
                 <h1 className={styles.title}>Energy Dashboard</h1>
 
                 <div className={styles.headerActions}>
+                    <button
+                        className={`${styles.iconButton} ${isFilterVisible ? styles.activeButton : ''}`}
+                        onClick={toggleFilter}
+                        aria-label="Toggle filters"
+                        title={isFilterVisible ? "Hide Filters" : "Show Filters"}
+                    >
+                        <Filter size={20} />
+                    </button>
+
                     <button
                         className={styles.iconButton}
                         onClick={toggleSplash}

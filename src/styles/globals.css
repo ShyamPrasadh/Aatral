@@ -1,24 +1,24 @@
 :root {
   /* Default Light Theme */
-  --color-primary: #2563a8;
-  --color-primary-light: #4f9cf5;
-  --color-primary-dark: #1a4d7a;
+  --color-primary: #2563eb;
+  --color-primary-light: #60a5fa;
+  --color-primary-dark: #1d4ed8;
 
-  --color-accent-blue: #4f9cf5;
-  --color-accent-gold: #d4af37;
-  --color-accent-gold-light: #f4d03f;
+  --color-accent-blue: #3d8bf2;
+  --color-accent-gold: #c39d20;
+  --color-accent-gold-light: #e6c03d;
 
-  --color-bg-primary: #ffffff;
-  --color-bg-secondary: #f0f8ff;
-  --color-bg-tertiary: #e6f2ff;
+  --color-bg-primary: #f8fafc;
+  --color-bg-secondary: #ffffff;
+  --color-bg-tertiary: #f1f5f9;
   --color-bg-card: #ffffff;
 
-  --color-text-primary: #0a1628;
-  --color-text-secondary: #4f9cf5;
-  --color-text-muted: #6b7a94;
+  --color-text-primary: #0f172a;
+  --color-text-secondary: #475569;
+  --color-text-muted: #64748b;
 
-  --color-border: rgba(0, 0, 0, 0.1);
-  --color-border-hover: rgba(0, 0, 0, 0.2);
+  --color-border: rgba(15, 23, 42, 0.08);
+  --color-border-hover: rgba(15, 23, 42, 0.15);
 
   /* Shadows */
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
@@ -97,23 +97,14 @@ body {
   overflow-x: hidden;
 }
 
-/* Custom Scrollbar */
+/* Hide Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  display: none;
 }
 
-::-webkit-scrollbar-track {
-  background: var(--color-bg-secondary);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--color-primary);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--color-primary-light);
+* {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 /* Typography */
@@ -163,12 +154,6 @@ p {
   transition: all var(--transition-base);
 }
 
-.card:hover {
-  border-color: var(--color-border-hover);
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-2px);
-}
-
 .btn {
   padding: var(--spacing-sm) var(--spacing-lg);
   border-radius: var(--radius-md);
@@ -184,7 +169,7 @@ p {
 
 .btn-primary {
   background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
-  color: var(--color-text-primary);
+  color: #ffffff;
 }
 
 .btn-primary:hover {
