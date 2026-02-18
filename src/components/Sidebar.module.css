@@ -110,18 +110,19 @@
 
 .menuItem:hover {
     background: var(--color-bg-tertiary);
-    color: var(--color-primary);
+    color: var(--color-text-primary);
     transform: translateX(4px);
 }
 
 .menuItem.active {
-    background: linear-gradient(135deg, rgba(26, 92, 173, 0.1), rgba(68, 149, 242, 0.05));
-    color: var(--color-primary);
-    font-weight: 600;
+    background: linear-gradient(135deg, rgba(26, 77, 122, 0.3), rgba(37, 99, 168, 0.2));
+    color: var(--color-accent-gold);
+    border-left: 3px solid var(--color-accent-gold);
+    padding-left: calc(var(--spacing-lg) - 3px);
 }
 
 .menuItem.active .menuIcon {
-    color: var(--color-primary);
+    color: var(--color-accent-gold);
 }
 
 .activeIndicator {
@@ -129,7 +130,7 @@
     right: var(--spacing-md);
     width: 6px;
     height: 6px;
-    background: var(--color-primary);
+    background: var(--color-accent-gold);
     border-radius: 50%;
     animation: pulse 2s ease-in-out infinite;
 }
