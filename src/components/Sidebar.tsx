@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import {
@@ -41,6 +42,17 @@ interface SidebarProps {
 
 export default function Sidebar({ isExpanded, toggleSidebar }: SidebarProps) {
     const pathname = usePathname();
+    const [hoveredItem, setHoveredItem] = useState<{ label: string; top: number } | null>(null);
+
+    const handleMouseEnter = (label: string, e: React.MouseEvent) => {
+        if (isExpanded) return;
+        const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+        setHoveredItem({ label, top: rect.top });
+    };
+
+    const handleMouseLeave = () => {
+        setHoveredItem(null);
+    };
 
     return (
         <aside className={`${styles.sidebar} ${isExpanded ? styles.expanded : styles.collapsed}`}>
@@ -69,7 +81,8 @@ export default function Sidebar({ isExpanded, toggleSidebar }: SidebarProps) {
                                 <a
                                     href={item.href}
                                     className={`${styles.menuItem} ${isActive ? styles.active : ''}`}
-                                    title={!isExpanded ? item.label : ''}
+                                    onMouseEnter={(e) => handleMouseEnter(item.label, e)}
+                                    onMouseLeave={handleMouseLeave}
                                 >
                                     <span className={styles.menuIcon}>
                                         <Icon size={20} />
@@ -97,6 +110,16 @@ export default function Sidebar({ isExpanded, toggleSidebar }: SidebarProps) {
                     {isExpanded ? <ChevronLeft size={20} /> : <ChevronRight size={20} />}
                 </button>
             </div>
+
+            {/* Render Tooltip outside of nav to avoid overflow issues */}
+            {!isExpanded && hoveredItem && (
+                <div
+                    className={styles.tooltip}
+                    style={{ top: hoveredItem.top }}
+                >
+                    {hoveredItem.label}
+                </div>
+            )}
         </aside>
     );
 }

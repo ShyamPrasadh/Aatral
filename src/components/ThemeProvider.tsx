@@ -13,6 +13,7 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const [theme, setTheme] = useState<Theme>('light');
+    const [isInitialized, setIsInitialized] = useState(false);
 
     useEffect(() => {
         // Check local storage or system preference
@@ -22,13 +23,15 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
             setTheme('dark');
         }
+        setIsInitialized(true);
     }, []);
 
     useEffect(() => {
+        if (!isInitialized) return;
         // Update data-theme attribute and local storage
         document.documentElement.setAttribute('data-theme', theme);
         localStorage.setItem('theme', theme);
-    }, [theme]);
+    }, [theme, isInitialized]);
 
     const toggleTheme = () => {
         setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));

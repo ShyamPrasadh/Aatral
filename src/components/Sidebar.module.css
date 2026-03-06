@@ -67,7 +67,7 @@
 .nav {
     flex: 1;
     overflow-y: auto;
-    overflow-x: hidden;
+    overflow-x: visible;
     padding: var(--spacing-md) 0;
 }
 
@@ -110,19 +110,49 @@
 
 .menuItem:hover {
     background: var(--color-bg-tertiary);
-    color: var(--color-text-primary);
+    color: var(--color-primary);
     transform: translateX(4px);
 }
 
+.tooltip {
+    position: fixed;
+    left: var(--sidebar-width-collapsed);
+    background: var(--color-text-primary);
+    color: var(--color-bg-primary);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    white-space: nowrap;
+    opacity: 1;
+    pointer-events: none;
+    z-index: 1002;
+    box-shadow: var(--shadow-md);
+    animation: fadeIn 0.2s ease-out;
+    transform: translateY(-50%);
+    margin-left: 10px;
+}
+
+/* Arrow for tooltip */
+.tooltip::before {
+    content: '';
+    position: absolute;
+    left: -5px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-width: 5px 6px 5px 0;
+    border-style: solid;
+    border-color: transparent var(--color-text-primary) transparent transparent;
+}
+
 .menuItem.active {
-    background: linear-gradient(135deg, rgba(26, 77, 122, 0.3), rgba(37, 99, 168, 0.2));
-    color: var(--color-accent-gold);
-    border-left: 3px solid var(--color-accent-gold);
-    padding-left: calc(var(--spacing-lg) - 3px);
+    background: linear-gradient(135deg, rgba(26, 92, 173, 0.1), rgba(68, 149, 242, 0.05));
+    color: var(--color-primary);
+    font-weight: 600;
 }
 
 .menuItem.active .menuIcon {
-    color: var(--color-accent-gold);
+    color: var(--color-primary);
 }
 
 .activeIndicator {
@@ -130,7 +160,7 @@
     right: var(--spacing-md);
     width: 6px;
     height: 6px;
-    background: var(--color-accent-gold);
+    background: var(--color-primary);
     border-radius: 50%;
     animation: pulse 2s ease-in-out infinite;
 }

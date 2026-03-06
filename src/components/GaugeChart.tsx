@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useRef, useState, useMemo } from 'react';
@@ -13,32 +14,31 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 const centerTextPlugin = {
     id: 'centerText',
     afterDraw(chart: any) {
-        // Only draw if centerText is explicitly configured
-        if (!chart.config.options.plugins.centerText) {
-            return;
-        }
+        if (!chart.config.options.plugins.centerText?.enabled) return;
 
         const ctx = chart.ctx;
-        const value = chart.config.options.plugins.centerText?.textTop || '0';
-        const unit = chart.config.options.plugins.centerText?.textBottom || '';
-        const textColor = chart.config.options.plugins.centerText?.textColor || '#ffffff';
-        const unitColor = chart.config.options.plugins.centerText?.unitColor || '#a8b8d8';
+        const { top, bottom, left, right } = chart.chartArea;
+        const cx = (left + right) / 2;
+        const cy = (top + bottom) / 2 + (bottom - top) * 0.08; // slightly below true center
+
+        const label = chart.config.options.plugins.centerText?.label || '';
+        const pct = chart.config.options.plugins.centerText?.pct || '';
+        const color = chart.config.options.plugins.centerText?.color || '#25A959';
+        const mutedColor = chart.config.options.plugins.centerText?.mutedColor || '#9ca3af';
 
         ctx.save();
 
-        // Draw main value - moved down by 20px
-        ctx.font = 'bold 1.5rem Inter, Arial, sans-serif';
-        ctx.fillStyle = textColor;
+        // Status label
+        ctx.font = 'bold 0.75rem Inter, Arial, sans-serif';
+        ctx.fillStyle = color;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText(value, chart.width / 2, chart.height / 2 + 30);
+        ctx.fillText(label, cx, cy - 8);
 
-        // Draw unit - moved down by 20px
-        if (unit) {
-            ctx.font = '500 0.75rem Inter, Arial, sans-serif';
-            ctx.fillStyle = unitColor;
-            ctx.fillText(unit, chart.width / 2, chart.height / 2 + 50);
-        }
+        // Percentage
+        ctx.font = '500 0.65rem Inter, Arial, sans-serif';
+        ctx.fillStyle = mutedColor;
+        ctx.fillText(pct, cx, cy + 10);
 
         ctx.restore();
     }
@@ -68,6 +68,7 @@ export default function GaugeChart({
     const [displayValue, setDisplayValue] = useState<number>(value);
     const [selectedTimeFrame, setSelectedTimeFrame] = useState<TimeFrame>('1day');
     const [showInfo, setShowInfo] = useState(false);
+    const [showDevPanel, setShowDevPanel] = useState(false);
 
     // Use a ref to keep track of the value for the plugin
     const valueRef = useRef(displayValue);
@@ -211,6 +212,8 @@ export default function GaugeChart({
     // Calculate needle rotation and color
     const rotation = -125 + (Math.min(Math.max(displayValue, 0), 100) / 100) * 250;
     const needleColor = displayValue <= 33 ? '#25A959' : displayValue <= 66 ? '#F5935D' : '#FF0000';
+    const statusLabel = displayValue <= 33 ? 'Excellent' : displayValue <= 66 ? 'Moderate' : 'Critical';
+    const statusColor = displayValue <= 33 ? '#25A959' : displayValue <= 66 ? '#F5935D' : '#FF0000';
 
     const data = {
         datasets: [
@@ -243,18 +246,20 @@ export default function GaugeChart({
         responsive: true,
         maintainAspectRatio: true,
         aspectRatio: 1.4,
-        animation: false, // Disable all animations
+        animation: false,
         plugins: {
             legend: { display: false },
             tooltip: { enabled: false },
             centerText: {
-                textTop: displayValue.toLocaleString(),
-                textBottom: unit,
-                textColor: theme === 'dark' ? '#ffffff' : '#1f2937',
-                unitColor: theme === 'dark' ? '#a8b8d8' : '#6b7280'
-            }
+                enabled: true,
+                label: statusLabel,
+                pct: `${displayValue}%`,
+                color: statusColor,
+                mutedColor: theme === 'dark' ? '#6b7280' : '#9ca3af',
+            },
         },
     };
+
 
     return (
         <div className={styles.gaugeContainer}>
@@ -282,8 +287,7 @@ export default function GaugeChart({
                     {timeFrames.map((tf) => (
                         <button
                             key={tf.value}
-                            className={`${styles.timeFrameButton} ${selectedTimeFrame === tf.value ? styles.active : ''
-                                }`}
+                            className={`${styles.timeFrameButton} ${selectedTimeFrame === tf.value ? styles.activeTimeFrame : ''}`}
                             onClick={() => setSelectedTimeFrame(tf.value)}
                         >
                             {tf.label}
@@ -292,15 +296,22 @@ export default function GaugeChart({
                 </div>
             </div>
 
-            <div className={styles.gaugeWrapper}>
+            {/* Main row: value left, gauge right */}
+            <div className={styles.gaugeMainRow}>
+                <div className={styles.valueSection}>
+                    <div className={styles.valueDisplay}>
+                        <span className={styles.valueBig}>{displayValue}</span>
+                        <span className={styles.valueUnit}>{unit}</span>
+                    </div>
+                    <span className={styles.valueSubtext}>Current reading</span>
+                </div>
+
                 <div className={styles.chartContainer}>
                     <Doughnut data={data} options={options} />
-                    {/* CSS Needle */}
                     <div
                         className={styles.needleWrapper}
                         style={{ transform: `rotate(${rotation}deg)` }}
                     >
-                        {/* Custom Pointer at Tip */}
                         <div
                             className={styles.needleTip}
                             style={{ borderColor: needleColor }}
@@ -312,29 +323,59 @@ export default function GaugeChart({
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div className={styles.inputWrapper}>
-                    <input
-                        type="number"
-                        min="1"
-                        max="100"
-                        value={inputValue}
-                        onChange={handleInputChange}
-                        className={styles.valueInput}
-                        placeholder="Enter 1-100"
-                    />
-                    <button
-                        onClick={handleRandomize}
-                        className={styles.randomButton}
-                        title="Randomize Value"
-                    >
-                        <Shuffle size={16} />
-                    </button>
+            {/* Metrics below */}
+            <div className={styles.metricsRow}>
+                <div className={styles.metricItem}>
+                    <span className={styles.metricItemLabel}>Avg Emission</span>
+                    <span className={styles.metricItemValue}>58 Mt</span>
+                    <span className={styles.metricItemChange}>-4.2% vs last month</span>
                 </div>
+                <div className={styles.metricDivider} />
+                <div className={styles.metricItem}>
+                    <span className={styles.metricItemLabel}>Peak</span>
+                    <span className={styles.metricItemValue}>91 Mt</span>
+                    <span className={styles.metricItemChange}>+1.8% vs last month</span>
+                </div>
+                <div className={styles.metricDivider} />
+                <div className={styles.metricItem}>
+                    <span className={styles.metricItemLabel}>Status</span>
+                    <span className={styles.metricItemValue} style={{ color: statusColor }}>{statusLabel}</span>
+                    <span className={styles.metricItemChange}>Meter No: {meterId}</span>
+                </div>
+            </div>
 
-                <div className={styles.gaugeFooter}>
-                    <span className={styles.meterId}>Meter No: {meterId}</span>
-                </div>
+            {/* Dev panel — hidden toggle in bottom-right corner */}
+            <div className={styles.devPanel}>
+                <button
+                    className={styles.devToggle}
+                    onClick={() => setShowDevPanel(prev => !prev)}
+                    title="Test controls"
+                >
+                    ⚙
+                </button>
+                {showDevPanel && (
+                    <div className={styles.devControls}>
+                        <span className={styles.devLabel}>Test value</span>
+                        <input
+                            type="number"
+                            min="1"
+                            max="100"
+                            value={inputValue}
+                            onChange={handleInputChange}
+                            className={styles.valueInput}
+                            placeholder="1-100"
+                        />
+                        <button
+                            onClick={handleRandomize}
+                            className={styles.randomButton}
+                            title="Randomize Value"
+                        >
+                            <Shuffle size={14} />
+                        </button>
+                    </div>
+                )}
             </div>
         </div>
     );

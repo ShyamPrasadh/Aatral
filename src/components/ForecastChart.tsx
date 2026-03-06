@@ -245,7 +245,7 @@ export default function ForecastChart({ filterKey = '' }: ForecastChartProps) {
                     {timeFrames.map((tf) => (
                         <button
                             key={tf.value}
-                            className={`${styles.timeFrameButton} ${selectedTimeFrame === tf.value ? styles.active : ''
+                            className={`${styles.timeFrameButton} ${selectedTimeFrame === tf.value ? styles.activeTimeFrame : ''
                                 }`}
                             onClick={() => setSelectedTimeFrame(tf.value)}
                         >

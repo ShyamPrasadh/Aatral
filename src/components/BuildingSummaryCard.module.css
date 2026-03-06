@@ -1,0 +1,401 @@
+.summaryCard {
+    background: var(--color-bg-card);
+    border-radius: var(--radius-lg);
+    padding: 20px 24px;
+    border: 1px solid var(--color-border);
+    width: 100%;
+    margin: 0 auto;
+    animation: fadeIn 0.4s ease-out;
+}
+
+/* Header */
+.cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.buildingName {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    letter-spacing: -0.025em;
+    margin: 0;
+}
+
+.viewStatsButton {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: none;
+    padding: 0;
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+}
+
+.viewStatsButton:hover {
+    color: var(--color-primary);
+    background-color: var(--color-bg-tertiary);
+}
+
+.buttonIcon {
+    color: inherit;
+    display: block;
+    flex-shrink: 0;
+}
+
+.blueIcon {
+    color: var(--color-primary);
+}
+
+.iconContainer {
+    width: 16px;
+    height: 16px;
+    overflow: hidden;
+    position: relative;
+}
+
+.rollingInner {
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.viewStatsButton:hover .rollingInner {
+    transform: translateY(-16px);
+}
+
+.buttonText {
+    display: inline;
+}
+
+/* Grid */
+.statsGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.statCard {
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    height: 160px;
+    position: relative;
+    justify-content: flex-start;
+    overflow: hidden;
+}
+
+
+
+/* Card Top (Icon + Label) */
+.cardTop {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+/* ... existing code ... */
+
+.cardBody {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    flex: 1;
+}
+
+/* Removed redundant margins - handled by .cardTop margin-bottom */
+
+/* Icons */
+.iconWrapper {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.iconGreen {
+    background-color: rgba(22, 163, 74, 0.1);
+    color: var(--color-accent-green);
+}
+
+.iconBlue {
+    background-color: rgba(37, 99, 235, 0.1);
+    color: var(--color-accent-blue);
+}
+
+.iconPurple {
+    background-color: rgba(147, 51, 234, 0.1);
+    color: #a855f7;
+    /* Purple-500 */
+}
+
+.cardLabel {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Content Styles */
+.co2ContentWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex: 1;
+    min-height: 0;
+}
+
+.valueGroupLeft {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    gap: 6px;
+    flex: 1;
+}
+
+.valueGroup {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+}
+
+.valueRow {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+}
+
+.valueLarge {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    letter-spacing: -0.03em;
+    line-height: 1;
+}
+
+.unitMedium {
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: var(--color-text-muted);
+}
+
+.unitBold {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+}
+
+.subLabel {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    font-weight: 500;
+}
+
+/* Trend Badge */
+.trendBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 8px;
+    background-color: rgba(220, 38, 38, 0.1);
+    border: 1px solid rgba(220, 38, 38, 0.2);
+    flex-shrink: 0;
+}
+
+.trendIcon {
+    color: var(--color-accent-red);
+}
+
+.trendText {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--color-accent-red);
+}
+
+/* Gauge Section (Side) */
+.gaugeContainerSide {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 0;
+    margin-top: -8px;
+}
+
+.gaugeWrapper {
+    position: relative;
+    width: 110px;
+    /* Slightly smaller to fit side by side */
+    height: 70px;
+    overflow: visible;
+    /* Changed to visible for needle safety */
+    display: flex;
+    justify-content: center;
+}
+
+.gaugeLabelSide {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-text-muted);
+    margin-top: 4px;
+}
+
+/* Progress Bar */
+.progressContainer {
+    width: 100%;
+    margin-top: auto;
+}
+
+.budgetLabel {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--color-text-muted);
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+.progressBarBg {
+    width: 100%;
+    background-color: rgba(147, 51, 234, 0.15);
+    border-radius: 9999px;
+    height: 10px;
+    overflow: hidden;
+}
+
+.progressBarFill {
+    background-color: #a855f7;
+    /* Purple-500 */
+    height: 100%;
+    border-radius: 9999px;
+}
+
+
+/* Responsive */
+@media (max-width: 900px) {
+    .statsGrid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .statCard {
+        height: 156px;
+        /* Uniform height matching the larger card */
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        gap: 8px;
+    }
+
+    .valueLarge {
+        font-size: 2rem;
+    }
+
+    .cardLabel {
+        font-size: 0.875rem;
+    }
+
+    .unitBold {
+        font-size: 0.875rem;
+    }
+
+    .iconWrapper {
+        width: 32px;
+        height: 32px;
+    }
+
+    .iconWrapper svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    .buttonText {
+        display: none;
+    }
+
+    .viewStatsButton {
+        padding: 6px;
+        min-width: 32px;
+        height: 32px;
+        justify-content: center;
+        border-radius: 8px;
+    }
+
+    .summaryCard {
+        padding: 16px 12px;
+    }
+
+    .trendBadge {
+        padding: 3px 6px;
+        font-size: 0.7rem;
+    }
+
+    .progressContainer {
+        margin-top: 4px;
+    }
+
+    .co2ContentWrapper {
+        margin-top: 4px;
+    }
+
+    .cardTop {
+        margin-bottom: 0px;
+        gap: 8px;
+    }
+
+    .cardHeader {
+        margin-bottom: 12px;
+    }
+
+    .gaugeContainerSide {
+        transform: translate(-10px, -18px);
+        /* Move left and up */
+    }
+}
+
+@media (max-width: 600px) {
+    .cardHeader {
+        flex-direction: row;
+        /* Keep horizontal on very small screens since button is now small */
+        align-items: center;
+        margin-bottom: 24px;
+    }
+
+    .viewStatsButton {
+        width: auto;
+        /* Don't make it full width */
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
